@@ -46,8 +46,8 @@ def register(request):
             forms= forms.save(commit=False)      
             forms.user = user
             forms.save()
-
-            return redirect('index')
+ 
+            return redirect('login')
  
     context={
         'form': form
@@ -56,7 +56,6 @@ def register(request):
 
 def loginuser(request):
     
-
     if request.method == 'POST':
         username = request.POST.get('uname')
         password = request.POST.get('passwd')
@@ -67,8 +66,9 @@ def loginuser(request):
             login(request, user)
             messages.success(request, "login successfull.")
             return redirect('dashboard')
-
-
+        else:
+            messages.warning(request, "invalid username/password.")
+            return redirect('login')
 
     return render(request, 'just/login.html')
 
@@ -101,7 +101,7 @@ def dashboard(request):
 def update_profile(request):
     user = request.user.profile
     form = UpdateProfile(instance=user)
-
+ 
     if request.method == 'POST':
         forms = UpdateProfile(request.POST, request.FILES, instance=user)
         if forms.is_valid():
@@ -113,5 +113,5 @@ def update_profile(request):
         'form': form
     }
 
-    return render(request, 'just/update.html' )
+    return render(request, 'just/update.html', context )
     
